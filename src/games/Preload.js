@@ -97,21 +97,25 @@ export class PreloadScene extends Phaser.Scene {
     this.load.audio('success', `${audiopath}/success.mp3`);
 
     // load resources question by url in json
-    GameJson.questionData.forEach( round => {
-      round.forEach( question => {
-        if(question.type === "image"){
-          this.load.image(question.question, `${modpath}/question/${question.question}`);
-        }else if(question.type === "audio"){
-          this.load.audio(question.question, `${audiopath}/question/${question.question}`);
-        }
+    /** @type { { body: string | Object,  choices: (string | Object)[] }[] } */
+    const questionData = GameJson.questions;
+    questionData.forEach( question => {
+      if( typeof(question.body) === 'object' && question.body.image){
+        const pre = question.body.image.includes('http') ? '': `${modpath}/question/`;
+        this.load.image(question.body.image, `${pre}${question.body.image}`);
+      }else if(typeof(question.body) === 'object' && question.body.audio){
+        const pre = question.body.audio.includes('http') ? '': `${audiopath}/question/`;
+        this.load.audio(question.body.audio, `${pre}${question.body.audio}`);
+      }
 
-        question.answers.forEach( q => {
-          if(q.type === 'image'){
-            this.load.image(q.content, `${modpath}/question/${q.content}`);
-          }else if(q.type === "audio"){
-            this.load.audio(q.content, `${audiopath}/question/${q.content}`);
-          }
-        })
+      question.choices.forEach( choice => {
+        if( typeof(choice) === 'object' && choice.image){
+          const pre = choice.image.includes('http') ? '': `${modpath}/question/`;
+          this.load.image(choice.image, `${pre}${choice.image}`);
+        }else if(typeof(choice) === 'object' && choice.audio){
+          const pre = choice.audio.includes('http') ? '': `${audiopath}/question/`;
+          this.load.audio(choice.audio, `${pre}${choice.audio}`);
+        }
       })
     })
   }

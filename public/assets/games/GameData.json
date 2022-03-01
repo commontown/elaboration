@@ -4,86 +4,52 @@
     "language": "en",
     "needClock": false,
     "timeEveryQuestion": 55,
-    "questionData": [
-        [
-            {
-                "question": "问题1问题1问题1问题1问题1问题1问题1问题1问题1问题1问题1问题1问题1问题1",
-                "type": "text",
-                "answers": [
-                    {
-                        "content": "答案1正确正确正确正确",
-                        "isTrue": true
-                    },
-                    {
-                        "content": "答案2错误错误错误错误",
-                        "isTrue": false
-                    },
-                    {
-                        "content": "答案3错误错误错误错误",
-                        "isTrue": false
-                    },
-                    {
-                        "content": "答案4错误错误错误错误",
-                        "isTrue": false
-                    }
-                ]
-            },
-            {
-                "question": "这是问题.png",
-                "type": "image",
-                "answers": [
-                    { "content": "这是错误回答2号.png", "type": "image", "isTrue": false
-                    },
-                    { "content": "这是正确回答.png", "type": "image", "isTrue": true
-                    },
-                    { "content": "这是错误回答3号.png", "type": "image", "isTrue": false
-                    },
-                    { "content": "这是错误回答4号.png", "type": "image", "isTrue": false
-                    }
-                ]
-            },
-            {
-                "question": "问题.m4a",
-                "type": "audio",
-                "answers": [
-                    { "content": "错误答案1号.mp3", "type": "audio", "isTrue": false
-                    },
-                    { "content": "错误答案2号.mp3", "type": "audio", "isTrue": false
-                    },
-                    { "content": "正确答案.mp3", "type": "audio", "isTrue": true
-                    },
-                    { "content": "错误答案3号.mp3", "type": "audio", "isTrue": false
-                    }
-                ]
-            },
-            {
-                "question": "问题4问题4问题4问题4问题4问题4问题4",
-                "type": "text",
-                "answers": [
-                    { "content": "答案错误错误错误错误1", "isTrue": false
-                    },
-                    { "content": "答案错误错误错误错误2", "isTrue": false
-                    },
-                    { "content": "答案错误错误错误错误3", "isTrue": false
-                    },
-                    { "content": "答案正确正确正确正确4", "isTrue": true
-                    }
-                ]
-            },
-            {
-                "question": "问题5问题5问题5问题5问题5问题5问题5问题5问题5问题5问题5",
-                "type": "text",
-                "answers": [
-                    { "content": "答案正确正确正确正确1", "isTrue": true
-                    },
-                    { "content": "答案错误错误错误错误2", "isTrue": false
-                    },
-                    { "content": "答案错误错误错误错误3", "isTrue": false
-                    },
-                    { "content": "答案错误错误错误错误4", "isTrue": false
-                    }
-                ]
-            }
-        ]
-    ]
+    "questions": [
+        {
+            "body": "问题1问题1问题1问题1问题1问题1问题1问题1问题1问题1问题1问题1问题1问题1",
+            "choices": [
+                "答案1正确正确正确正确",
+                "答案2错误错误错误错误",
+                "答案3错误错误错误错误",
+                "答案4错误错误错误错误"
+            ]
+        },
+        {
+            "body": { "image": "这是问题.png" },
+            "choices": [
+                { "image": "这是错误回答2号.png"},
+                { "image": "这是正确回答.png"},
+                { "image": "这是错误回答3号.png"},
+                { "image": "这是错误回答4号.png"}
+            ]
+        },
+        {
+            "body": {"audio": "问题.m4a"},
+            "choices": [
+                { "audio": "错误答案1号.mp3"},
+                { "audio": "错误答案2号.mp3"},
+                { "audio": "正确答案.mp3"},
+                { "audio": "错误答案3号.mp3"}
+            ]
+        },
+        {
+            "body": "问题4问题4问题4问题4问题4问题4问题4",
+            "choices": [
+                "答案错误错误错误错误1",
+                "答案错误错误错误错误2",
+                "答案错误错误错误错误3",
+                "答案正确正确正确正确4"
+            ]
+        },
+        {
+            "body": "问题5问题5问题5问题5问题5问题5问题5问题5问题5问题5问题5",
+            "choices": [
+                "答案正确正确正确正确1",
+                "答案错误错误错误错误2",
+                "答案错误错误错误错误3",
+                "答案错误错误错误错误4"
+            ]
+        }
+    ],
+    "answers":["A","B","C","D","A"]
 }

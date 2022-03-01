@@ -5,7 +5,7 @@ export class Options {
     /**
      * @param {Phaser.Scene} scene
      * @param {number} depth
-     * @param { { question: string, type: string, answers: {content: any, isTrue: boolean}[] }[] } questionData
+     * @param { { body: string | Object,  choices: (string | Object)[] }[] } questionData
      */
     constructor(scene, depth, questionData, logic) {
         /** @property {Phaser.Scene} */
@@ -14,8 +14,8 @@ export class Options {
         this.questionData = questionData;
         this.currentQuestionIndex = 0;
         this._makeFourNest();
+        this._answerIndex = 0;
         this._makeFourAlphabet();
-        this._makeOption();
         this._makeQuestion();
         this._logic = logic;
     }
@@ -27,13 +27,13 @@ export class Options {
         this._makeQuestion();
     }
 
-    _makeQuestion() {
+    _makeQuestion() { // make Option  end
         if(this.questionContainer){
             this.questionContainer.destroy();
         }
         const { width: w, height: h } = this.scene.scale;
         
-        if(this.questionData[this.currentQuestionIndex].type==="text"){
+        if( typeof(this.questionData[this.currentQuestionIndex].body) === 'string'){
             const sumW = 290; // max 290
             const bg0 = this.scene.add.image(0, 0, 'question-bg', 0).setOrigin(0, 0.5);
             const frameW = bg0.width;
@@ -42,7 +42,7 @@ export class Options {
             this.questionContainer = this.scene.add.container(w * 0.63, h * 0.35, [bg0, bg1, bg2]).setDepth(this.depth + 999);
             
             const text = this.scene.add.text( 35, -50,
-                this.questionData[this.currentQuestionIndex].question.substr(0, 30),
+                this.questionData[this.currentQuestionIndex].body.substr(0, 30),
                 // 'dsafsdfsfsdafdsfsdaf',
                 {
                     fontFamily: 'yahei',
@@ -53,7 +53,7 @@ export class Options {
                 },
             )
             this.questionContainer.add(text)
-        } if (this.questionData[this.currentQuestionIndex].type==="image"){
+        } if (this.questionData[this.currentQuestionIndex].body.image){
             const sumW = 180; // max 290
             const bg0 = this.scene.add.image(0, 0, 'question-bg', 0).setOrigin(0, 0.5);
             const frameW = bg0.width;
@@ -61,10 +61,10 @@ export class Options {
             const bg2 = this.scene.add.image(sumW, 0, 'question-bg', 2).setOrigin(1, 0.5);
             this.questionContainer = this.scene.add.container(w * 0.63, h * 0.35, [bg0, bg1, bg2]);
             
-            const image = this.scene.add.image( 35, -50,  this.questionData[this.currentQuestionIndex].question ).setOrigin(0)
+            const image = this.scene.add.image( 35, -50,  this.questionData[this.currentQuestionIndex].body.image ).setOrigin(0)
             image.setDisplaySize(132, 99);
             this.questionContainer.add(image)
-        } if (this.questionData[this.currentQuestionIndex].type==="audio"){
+        } if (this.questionData[this.currentQuestionIndex].body.audio){
             const sumW = 180; // max 290
             const bg0 = this.scene.add.image(0, 0, 'question-bg', 0).setOrigin(0, 0.5);
             const frameW = bg0.width;
@@ -74,12 +74,13 @@ export class Options {
             
             const image = this.scene.add.image( 50, -50,  'egg-audio' ).setOrigin(0).setScale(0.8);
             image.setInteractive({ useHandCursor: true });
-            image.setData('onclick', () => { this.scene.sound.add(this.questionData[this.currentQuestionIndex].question).play()} );
+            image.setData('onclick', () => {
+                this.scene.sound.add(this.questionData[this.currentQuestionIndex].body.audio).play()
+            } );
 
             // image.setDisplaySize(132, 99);
             this.questionContainer.add(image)
         }
-
         this._makeOption();
     }
 
@@ -90,13 +91,13 @@ export class Options {
             const nest = this.scene.add.image((0.15 + (i * (0.7 / 3))) * w, height - 50, 'option-nest');
             nest.setDepth(this.depth);
             this.nestContainer.add(nest);
-            const answer = this.questionData[this.currentQuestionIndex].answers[i];
+            const answer = this.questionData[this.currentQuestionIndex].choices[i];
 
             let img;
-            if(answer.type === 'image') {
-                img = this.scene.add.image((0.15 + (i * (0.7 / 3))) * w, height - 50, answer.content).setOrigin( 0, 1);
+            if( typeof(answer) === 'object' && answer.image) {
+                img = this.scene.add.image((0.15 + (i * (0.7 / 3))) * w, height - 50, answer.image).setOrigin( 0, 1);
                 this.nestContainer.add(img);
-            } else if (answer.type === 'audio'){
+            } else if ( typeof(answer) === 'object' && answer.audio){
                 img = this.scene.add.image((0.15 + (i * (0.7 / 3))) * w, height - 50, 'egg-audio').setOrigin( 0, 1);
                 this.nestContainer.add(img);
             }
@@ -118,17 +119,20 @@ export class Options {
             }
             return arr;
         }
-        const shuffledArray = shuffleArray(this.questionData[this.currentQuestionIndex].answers)
+        this._answerIndex = ['A', 'B', 'C', 'D'].indexOf( GameJson.answers[this.currentQuestionIndex] )
+        const rightAnswer = this.questionData[this.currentQuestionIndex].choices[this._answerIndex];
+        const shuffledArray = shuffleArray(this.questionData[this.currentQuestionIndex].choices)
+        this._answerIndex = shuffledArray.indexOf(rightAnswer);
         for (let i = 0; i < 4; i++) {
             const answer = shuffledArray[i];
-            if(answer.type === 'image') {
-                const option = this.scene.add.image((0.15 + (i * (0.7 / 3))) * w, height - 70, answer.content).setOrigin( 0.5, 1).setDisplaySize(160, 120);
+            if(typeof(answer) === 'object' && answer.image) {
+                const option = this.scene.add.image((0.15 + (i * (0.7 / 3))) * w, height - 70, answer.image).setOrigin( 0.5, 1).setDisplaySize(160, 120);
                 this.optionContainer.add(option);
-            } else if (answer.type === 'audio'){
+            } else if (typeof(answer) === 'object' && answer.audio){
                 const option = this.scene.add.image((0.15 + (i * (0.7 / 3))) * w, height - 50, 'egg-audio').setOrigin( 0.5, 1);
                 option.setInteractive({ useHandCursor: true });
                 this.optionContainer.add(option);
-                option.setData('onclick', () => { this.scene.sound.add(answer.content).play()} );
+                option.setData('onclick', () => { this.scene.sound.add(answer.audio).play()} );
             } else { // text
                 const bgW = 210;
                 const bgCenterW = bgW - 2 * (74 / 3);
@@ -136,7 +140,7 @@ export class Options {
                 const optionBg1 = this.scene.add.image((0.15 + i * 0.7 / 3) * w, height - 60, 'option-bg', 1).setOrigin( 0.5, 1).setDisplaySize(bgCenterW, 110);
                 const optionBg2 = this.scene.add.image((0.15 + i * 0.7 / 3) * w + bgCenterW / 2, height - 60, 'option-bg', 2).setOrigin( 0, 1).setDisplaySize(74/ 3, 110);
 
-                const option = this.scene.add.text((0.15 + i * 0.7 / 3) * w, height - 120, answer.content.substr(0, 5),
+                const option = this.scene.add.text((0.15 + i * 0.7 / 3) * w, height - 120, answer.substr(0, 5),
                     { fontFamily: 'yahei', fontSize: 22, align: 'center', color: '#ffffff', wordWrap: { width: 170, useAdvancedWrap: true } }
                 ).setOrigin(0.5, 0.5)
                 this.optionContainer.add([optionBg,optionBg1, optionBg2, option]);
@@ -159,7 +163,8 @@ export class Options {
                 if( this._logic.state.gameIsPause || !this.questionData[this.currentQuestionIndex]) return; // cannot interactive when pause or end
                 this.scene.sound.add('btn-press').play();
                 // right answer
-                if(this.questionData[this.currentQuestionIndex].answers[i].isTrue){
+                // if(this.questionData[this.currentQuestionIndex].answers[i].isTrue){
+                if( i === this._answerIndex){
                     this.scene.sound.add('right').play({delay: 0.5});
                     this._logic.state.score += this._logic.state.remainTime + 10;
                     setTimeout( ()=> {

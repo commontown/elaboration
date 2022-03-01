@@ -62,7 +62,7 @@ class RoseGameScene extends Phaser.Scene {
   }
 
   create() {
-    questionData = JSON.parse(JSON.stringify(GameJson.questionData)); // deep clone
+    questionData = JSON.parse(JSON.stringify(GameJson.questions)); // deep clone
     const startfn = (scene, gameData) => {
       const logic = new __logic(scene, gameData);
       scene.input.on('gameobjectdown', (pointer, obj) => logic.clickObject(pointer, obj),);
@@ -131,8 +131,8 @@ class __logic {
     }
     this.state = { 
       gameBigRoundIndex: 0,
-      gameBigRoundSum: questionData.length,
-      score: 0, sum_egg: questionData[0].length, broke_num: 0, remainTime: GameJson.timeEveryQuestion, sumTime: 0, gameIsPause: false };
+      gameBigRoundSum: 1, // questionData.length,
+      score: 0, sum_egg: questionData.length, broke_num: 0, remainTime: GameJson.timeEveryQuestion, sumTime: 0, gameIsPause: false };
 
     this.scene.add.image(0, 0, 'bg').setOrigin(0); // background image
 
@@ -143,7 +143,7 @@ class __logic {
     const petNames = ["幽灵猫", "冒失猫", "走路菇", "海狸巨人", "树叶浣熊", "狸猫公主", "独角海豹", "人参村长", "恐龙战士", "火焰龙"];
     this.petName = this.scene.add.text(width * 0.5, 0.75 * height, petNames[GameJson.monster - 1], { fontFamily: 'yahei', fontSize: 40, align: 'center', color: '#000' }).setOrigin(0.5).setVisible(false);
 
-    this.options = new Options(this.scene, this.depth.interface, questionData[this.state.gameBigRoundIndex], this);
+    this.options = new Options(this.scene, this.depth.interface, questionData, this);
     this.scoreboard = this.makeScoreboard();
     this.progressBar = this.makeProgressBar();
     this.clockInterval = this.makeClock();
@@ -328,8 +328,8 @@ class __logic {
       this.pet.setInteractive();
       this.pet.setData('onclick', () => { new GameEndBoard(this.scene, this) })
     }else{
-      this.options.update(questionData[this.state.gameBigRoundIndex]);
-      this.state.sum_egg = questionData[this.state.gameBigRoundIndex].length
+      this.options.update(questionData);
+      this.state.sum_egg = questionData.length
       this.state.broke_num = 0;
       this.makeProgressBar();
     }

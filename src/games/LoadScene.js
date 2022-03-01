@@ -18,7 +18,6 @@ export class LoadGameJsonScene extends Phaser.Scene {
     }
     create() {
         GameJson = this.cache.json.get('gameData');
-        this.scene.start('Load');
         portalRequestGameData(this, (scene, gameData)=>{
             if (gameData) GameJson = gameData;
             this.scene.start('Load');
